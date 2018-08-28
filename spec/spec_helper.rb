@@ -1,4 +1,5 @@
 require "bundler/setup"
+require 'rspec/given'
 require "todoable"
 
 RSpec.configure do |config|

@@ -4,4 +4,6 @@ services:
   client:
     build:
       context: .
+    volumes:
+      - .:/app
     command: '/app/bin/console'
