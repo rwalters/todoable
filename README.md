@@ -1,8 +1,6 @@
 # Todoable
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/todoable`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+A simple gem that provides a client for the Todoable API.
 
 ## Installation
 
@@ -22,13 +20,59 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+There are `List`s and `Item`s, defined and implemented via [Dry-struct](https://dry-rb.org/gems/dry-struct/).
+
+### Todoable::Repository
+
+Gateway to query the API.
+
+#### Todoable::Repository::Lists
+
+##### Query Methods
+
+- `.all` returns an array of `List` objects
+- `.by_id(:id[, :id[, ...]])` returns an array of `List` objects whose `ID`s match the provided `:id`s
+- `.[:id]` returns a `List` object with the matching `:id`
+
+##### Mutation Methods
+
+- `.create(name: '')` creates a new `List` via the API and returns a `List` object
+- `.update(id: :id, name: '')` updates the given `List` via the API and returns a `List` object with the new attributes
+- `.delete(:id[, :id[, ...]])` deletes lists with matching `:id`s
+
+#### Todoable::Repository::Items
+
+##### Query Methods
+
+- `.all` throws an exception
+- `.by_id(:id[, :id[, ...]])` returns an array of `Item` objects whose `ID`s match the provided `:id`s
+- `.[:id]` returns a `Item` object with the matching `:id`
+
+##### Mutation Methods
+
+- `.create(name: ''[, finished_at: <ISO8601 Formatted String>])` creates a new `Item` via the API and returns a `Item` object
+  - [Information on ISO8601 Format](https://en.wikipedia.org/wiki/ISO_8601)
+- `.finish(:id)` updates the `Item` as finished, and returns the updated `Item` object
+- `.update` with any parameters raises an exception
+- `.delete(:id[, :id[, ...]])` deletes items with matching `:id`s
+
+### Todoable::List
+
+The class for an immutable struct-like object that has `name`, `src`, `id`, and has zero or more `Item`s.
+
+- `#delete` deletes the `List` via the API
+
+### Todoable::Item
+
+The class for an immutable struct-like object that has `name`, `finished_at`, `src`, `id`, and has one `List`.
+
+- `#delete` deletes the `Item` via the API
 
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`.
 
 ## Contributing
 
