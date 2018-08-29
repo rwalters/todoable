@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "rest-client", "~> 2.0.2"
   spec.add_dependency "dry-struct"
-  spec.add_dependency "dry-validation"
+  spec.add_dependency "dry-configurable"
 
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "rake", "~> 10.0"
