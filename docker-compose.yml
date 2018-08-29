@@ -6,4 +6,8 @@ services:
       context: .
     volumes:
       - .:/app
+      - bundle_cache:/bundle
     command: '/app/bin/console'
+
+volumes:
+  bundle_cache:
