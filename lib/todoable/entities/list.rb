@@ -7,5 +7,13 @@ module Todoable
     attribute :src,   Types::Strict::String.meta(omittable: true)
 
     attribute :items, Types::Strict::Array.of(Todoable::Item).default([])
+
+    def refetch
+      Todoable::Repository::Lists[id]
+    end
+
+    def delete
+      Todoable::Repository::Lists.delete(self)
+    end
   end
 end

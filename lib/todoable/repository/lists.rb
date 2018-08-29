@@ -18,8 +18,12 @@ module Todoable::Repository
       def [](id)
         list_hash = client.get(path: "/lists/#{id}")
         item_hashes = list_hash.delete(:items)
+
+        list = all.select{|l| l.id == id }.first
+        list_hash[:id]    = list.id
+        list_hash[:src]   = list.src
         list_hash[:items] = item_hashes.map do |item_hash|
-          Todoable::Item.new(item_hash)
+          Todoable::Item.new(item_hash.merge(list_id: id))
         end
 
         Todoable::List.new(list_hash)
@@ -44,11 +48,11 @@ module Todoable::Repository
         self[id]
       end
 
-      def delete(*ids)
+      def delete(*lists)
         args = {method: :delete}
 
-        ids.each do |id|
-          args[:path] = "/lists/#{id}"
+        lists.each do |list|
+          args[:path] = "/lists/#{list.id}"
           client.request(args)
         end
 

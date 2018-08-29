@@ -6,6 +6,14 @@ RSpec.describe Todoable::Repository::Lists do
 
   Given(:list) { Todoable::List.new(list_hash) }
 
+  Given(:reduced_list_hash) do
+    { :name=>"test", items: []}
+  end
+
+  Given(:list_hash) do
+    {:name=>"test", :src=>"http://example.com/lists/UUID", :id=> "UUID" }
+  end
+
   Given(:lists_array) do
     [list]
   end
@@ -21,48 +29,38 @@ RSpec.describe Todoable::Repository::Lists do
         Todoable::Repository.config.client = client
       end
 
-      Given(:list_hash) do
-        {:name=>"test", :src=>"http://example.com/lists/UUID", :id=> "UUID" }
-      end
-
       When(:result) { repo.all }
       Then { result == lists_array }
     end
 
-    context ".by_id" do
+    context "using the ID" do
       Given!(:setup) do
         allow(client)
           .to receive(:get)
+          .with(path: "/lists")
+          .and_return({lists: [list_hash]})
+
+        allow(client)
+          .to receive(:get)
           .with(path: "/lists/#{list_hash[:id]}")
-          .and_return(list_hash)
+          .and_return(reduced_list_hash)
 
         Todoable::Repository.config.client = client
       end
 
       Given(:list_hash) do
-        { :name=>"test", items: []}
+        reduced_list_hash.merge({:src=>"http://example.com/lists/UUID", :id=> "UUID" })
       end
 
-      When(:result) { repo.by_id(list_hash[:id]) }
-      Then { result == [list] }
-    end
-
-    context ".[]" do
-      Given!(:setup) do
-        allow(client)
-          .to receive(:get)
-          .with(path: "/lists/#{list_hash[:id]}")
-          .and_return(list_hash)
-
-        Todoable::Repository.config.client = client
+      context ".by_id" do
+        When(:result) { repo.by_id(list_hash[:id], list_hash[:id]) }
+        Then { result == [list, list] }
       end
 
-      Given(:list_hash) do
-        { :name=>"test", items: []}
+      context ".[]" do
+        When(:result) { repo[list_hash[:id]] }
+        Then { result == list }
       end
-
-      When(:result) { repo[list_hash[:id]] }
-      Then { result == list }
     end
   end
 
@@ -96,7 +94,12 @@ RSpec.describe Todoable::Repository::Lists do
       Given!(:setup) do
         allow(client)
           .to receive(:get)
-          .with(path: "/lists/#{updated_list_hash[:id]}")
+          .with(path: "/lists")
+          .and_return({lists: [list_hash]})
+
+        allow(client)
+          .to receive(:get)
+          .with(path: "/lists/#{list_hash[:id]}")
           .and_return(updated_list_hash)
 
         allow(client)
@@ -107,7 +110,7 @@ RSpec.describe Todoable::Repository::Lists do
         Todoable::Repository.config.client = client
       end
       Given(:updated_name) { "update name" }
-      Given(:updated_list_hash) { list_hash.merge(name: updated_name) }
+      Given(:updated_list_hash) { reduced_list_hash.merge(name: updated_name) }
       Given(:updated_list) { Todoable::List.new(updated_list_hash) }
 
       When(:result) { repo.update(id: list.id, name: updated_name) }
@@ -123,7 +126,7 @@ RSpec.describe Todoable::Repository::Lists do
         Todoable::Repository.config.client = client
       end
 
-      When(:result) { repo.delete(list.id) }
+      When(:result) { repo.delete(list) }
       Then { result == true }
     end
   end

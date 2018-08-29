@@ -26,7 +26,7 @@ module Todoable
       request(method: :post, path: path, params: params)
     end
 
-    def request(method:, path:, params:)
+    def request(method:, path:, params: {})
       authenticate
 
       headers = default_headers

@@ -38,35 +38,39 @@ Gateway to query the API.
 
 - `.create(name: '')` creates a new `List` via the API and returns a `List` object
 - `.update(id: :id, name: '')` updates the given `List` via the API and returns a `List` object with the new attributes
-- `.delete(:id[, :id[, ...]])` deletes lists with matching `:id`s
+- `.delete(<List>[, <List>[, ...]])` deletes list(s)
 
 #### Todoable::Repository::Items
 
 ##### Query Methods
 
-- `.all` throws an exception
-- `.by_id(:id[, :id[, ...]])` returns an array of `Item` objects whose `ID`s match the provided `:id`s
-- `.[:id]` returns a `Item` object with the matching `:id`
+Items are only queryable through Lists
+
+- `.all` raises a `Todoable::NotAccessibleError`
+- `.by_id` raises a `Todoable::NotAccessibleError`
+- `.[:id]` raises a `Todoable::NotAccessibleError`
 
 ##### Mutation Methods
 
-- `.create(name: ''[, finished_at: <ISO8601 Formatted String>])` creates a new `Item` via the API and returns a `Item` object
+- `.create(list_id: :id, name: ''[, finished_at: <ISO8601 Formatted String>])` creates a new `Item` on `List` via the API and returns an `Item` object
   - [Information on ISO8601 Format](https://en.wikipedia.org/wiki/ISO_8601)
-- `.finish(:id)` updates the `Item` as finished, and returns the updated `Item` object
-- `.update` with any parameters raises an exception
-- `.delete(:id[, :id[, ...]])` deletes items with matching `:id`s
+- `.finish(<Item>)` updates the `Item` as finished, and returns the updated `Item` object
+- `.update` (with any parameters) raises an exception
+- `.delete(<Item>[, <Item>[, ...]])` deletes items
 
 ### Todoable::List
 
 The class for an immutable struct-like object that has `name`, `src`, `id`, and has zero or more `Item`s.
 
-- `#delete` deletes the `List` via the API
+- `#refetch` fetches and returns a new `List` with this object's ID
+- `#delete` deletes the `List` via the API, returns true or false
 
 ### Todoable::Item
 
 The class for an immutable struct-like object that has `name`, `finished_at`, `src`, `id`, and has one `List`.
 
-- `#delete` deletes the `Item` via the API
+- `#refetch` fetches and returns a new `Item` with this object's ID
+- `#delete` deletes the `Item` via the API, returns true or false
 
 ## Development
 
