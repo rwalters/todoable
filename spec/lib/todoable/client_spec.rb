@@ -5,7 +5,6 @@ RSpec.describe Todoable::Client do
   Given(:client_class) { Todoable::Client }
   Given(:client) { client_class.new }
 
-
   context "defaults are set" do
     Then { client.username == Todoable.config.username }
     Then { client.password == Todoable.config.password }
