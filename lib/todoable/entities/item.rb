@@ -14,7 +14,7 @@ module Todoable
     end
 
     def refetch
-      list.refetch.items.select{|i| i.id == id}.first
+      list.refetch.items.detect{|i| i.id == id}
     end
 
     def delete

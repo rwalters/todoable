@@ -33,7 +33,7 @@ module Todoable::Repository
         client.request(args)
 
         list = Todoable::Repository::Lists[item.list_id]
-        list.items.select{|i| i.id == item.id}.first
+        list.items.detect{|i| i.id == item.id}
       end
 
       def update(**args)
