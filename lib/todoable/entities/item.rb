@@ -1,10 +1,11 @@
 module Todoable
   class Item < Entity
-    attribute :id,          Types::Strict::String.meta(omittable: true)
-    attribute :name,        Types::Strict::String
-    attribute :finished_at, Types::JSON::Time.meta(omittable: true)
-    attribute :src,         Types::Strict::String.meta(omittable: true)
-    attribute :list_id,     Types::Strict::String.meta(omittable: true)
+    attribute :id,          Types::Id
+    attribute :name,        Types::Name
+    attribute :finished_at, Types::Time
+    attribute :src,         Types::Src
+
+    attribute :list_id,     Types::Id
 
     def list
       return nil if list_id.nil?

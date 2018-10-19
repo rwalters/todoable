@@ -2,9 +2,9 @@ require "todoable/entities/item"
 
 module Todoable
   class List < Entity
-    attribute :id,    Types::Strict::String.meta(omittable: true)
-    attribute :name,  Types::Strict::String
-    attribute :src,   Types::Strict::String.meta(omittable: true)
+    attribute :id,    Types::Id
+    attribute :name,  Types::Name
+    attribute :src,   Types::Src
 
     attribute :items, Types::Strict::Array.of(Todoable::Item).default([])
 
