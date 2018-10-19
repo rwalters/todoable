@@ -9,7 +9,7 @@ module Todoable
     def list
       return nil if list_id.nil?
 
-      @item ||= Todoable::Repository::Lists[list_id]
+      @list ||= Todoable::Repository::Lists[list_id]
     end
 
     def refetch
